@@ -1,10 +1,10 @@
 import express from 'express'
 import { Router } from 'express'
 
-// import dotenv from 'dotenv'
+import dotenv from 'dotenv'
 import cors from 'cors';
 
-// dotenv.config()
+dotenv.config()
 const app = express()
 const route = Router()
 
