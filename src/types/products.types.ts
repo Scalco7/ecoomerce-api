@@ -1,4 +1,4 @@
-interface Variant {
+export interface Variant {
     id: string;
     name: string;
 }
