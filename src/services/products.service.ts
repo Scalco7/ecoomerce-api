@@ -77,8 +77,6 @@ export class ProductsService {
             GROUP BY pt.id;
             `
 
-
-
         const sections: ProductSection[] = dbCategories.map((category) => {
             const productTypes: ProductType[] = dbProductTypes.filter(pt => pt.category_id == category.id).map(pt => {
                 const variantType1: VariantType | undefined = pt.variant_type_1_name ? { type: pt.variant_type_1_name, variants: [] } : undefined;
