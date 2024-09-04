@@ -32,5 +32,11 @@ model product_type {
   description         String
   variant_type_1_name String?   @db.VarChar(10)
   variant_type_2_name String?   @db.VarChar(10)
+  category_id         String    @db.VarChar(8)
   product             product[]
+}
+
+model category {
+  id   String @id @db.VarChar(8)
+  name String @db.VarChar(50)
 }
