@@ -5,7 +5,7 @@ export class ProductsController {
         this.productsService = []
     }
 
-    public async getProducts() {
+    public async getProductsBySection() {
         const products = await this.productsService
         return products
     }
