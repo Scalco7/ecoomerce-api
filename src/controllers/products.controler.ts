@@ -1,12 +1,15 @@
+import { ProductsService } from "../services/products.service";
+import { ProductSection } from "../types/products.types";
+
 export class ProductsController {
-    private productsService: [];
+    private productsService: ProductsService;
 
     constructor() {
-        this.productsService = []
+        this.productsService = new ProductsService()
     }
 
-    public async getProductsBySection() {
-        const products = await this.productsService
+    public async getProductsBySection(): Promise<ProductSection[]> {
+        const products = await this.productsService.getProductsBySection()
         return products
     }
 }
