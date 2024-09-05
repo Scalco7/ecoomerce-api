@@ -51,16 +51,16 @@ export class ProductsService {
             SELECT 
                 cat.id,
                 cat.name
-            FROM products.category cat
-            INNER JOIN products.product_type pt ON cat.id = pt.category_id
-            INNER JOIN products.product p ON pt.id = p.product_type_id
+            FROM public.category cat
+            INNER JOIN public.product_type pt ON cat.id = pt.category_id
+            INNER JOIN public.product p ON pt.id = p.product_type_id
             WHERE p.available_quantity > 0
             GROUP BY cat.id;
             `
         const dbProducts: product[] = await this.prisma.product.findMany({ where: { available_quantity: { gt: 0 } } })
         const dbImages: product_image[] = await this.prisma.$queryRaw`
-            SELECT * FROM product_image img
-                INNER JOIN product p ON img.product_id = p.id
+            SELECT * FROM public.product_image img
+                INNER JOIN public.product p ON img.product_id = p.id
                 WHERE p.available_quantity > 0;
             `
         const dbProductTypes: product_type[] = await this.prisma.$queryRaw`
@@ -71,8 +71,8 @@ export class ProductsService {
                 pt.variant_type_1_name,
                 pt.variant_type_2_name,
                 pt.category_id
-            FROM products.product_type pt
-            INNER JOIN products.product p ON pt.id = p.product_type_id
+            FROM public.product_type pt
+            INNER JOIN public.product p ON pt.id = p.product_type_id
             WHERE p.available_quantity > 0
             GROUP BY pt.id;
             `
