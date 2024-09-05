@@ -1,6 +1,7 @@
 import { ProductItem, ProductSection, ProductType, Variant, VariantType } from "../types/products.types";
 import { category, PrismaClient, product, product_image, product_type } from '@prisma/client'
 import { generateRandomID } from "../utils/id.utils";
+import { getCompletImgUrl } from "../utils/imgUrl.utils";
 
 function addVariantToVariantType(variantType: VariantType | undefined, name: string | null): string | undefined {
     if (!variantType || !name) return
@@ -28,7 +29,7 @@ function addDbProductToProductType(
 
     const product: ProductItem = {
         id: dbProduct.id,
-        imgUrls: dbImages.filter(img => img.product_id == dbProduct.id).map(img => img.url),
+        imgUrls: dbImages.filter(img => img.product_id == dbProduct.id).map(img => getCompletImgUrl(img.url)),
         price: dbProduct.price.toNumber(),
         promotionPrice: dbProduct.promotion_price.toNumber(),
         availableQuantity: dbProduct.available_quantity,
