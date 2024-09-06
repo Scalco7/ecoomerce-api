@@ -56,7 +56,8 @@ export class ProductsService {
             INNER JOIN public.product_type pt ON cat.id = pt.category_id
             INNER JOIN public.product p ON pt.id = p.product_type_id
             WHERE p.available_quantity > 0
-            GROUP BY cat.id;
+            GROUP BY cat.id
+            ORDER BY cat.id;
             `
         const dbProducts: product[] = await this.prisma.product.findMany({ where: { available_quantity: { gt: 0 } } })
         const dbImages: product_image[] = await this.prisma.$queryRaw`
