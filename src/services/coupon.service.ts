@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { CouponDataForResponse, CreateCouponRequest, GetCouponByNameRequest } from "../types/coupon.types";
+import { CouponDataForResponse, CouponResponse, CreateCouponRequest, GetCouponByNameRequest } from "../types/coupon.types";
 import { generateRandomID } from "../utils/id.utils";
 
 function formatCouponForResponse(coupon: {
@@ -27,29 +27,40 @@ export class CouponsService {
             select: { name: true, discoun_percentage: true, quantity_used: true, max_quantity_to_use: true }
         })
 
-        if (!coupon) throw Error('Cupom inválido')
-        if (coupon.quantity_used >= coupon.max_quantity_to_use) throw Error('Cupom indisponível')
+        if (!coupon) {
+            await this.prisma.$disconnect()
+            throw Error('Cupom inválido')
+        }
+        if (coupon.max_quantity_to_use && coupon.quantity_used >= coupon.max_quantity_to_use) {
+            await this.prisma.$disconnect()
+            throw Error('Cupom indisponível')
+        }
 
         await this.prisma.$disconnect()
         return formatCouponForResponse(coupon)
     }
 
-    public async createCoupon(data: CreateCouponRequest) {
-        this.prisma.coupons.create({
-            data: {
-                id: generateRandomID(),
-                name: data.name,
-                discoun_percentage: data.discountPercentage,
-                quantity_used: 0,
-                max_quantity_to_use: data.availableQuantity,
-            }
-        })
+    public async createCoupon(data: CreateCouponRequest): Promise<void> {
+        try {
+            this.prisma.coupons.create({
+                data: {
+                    id: generateRandomID(),
+                    name: data.name,
+                    discoun_percentage: data.discountPercentage,
+                    quantity_used: 0,
+                    max_quantity_to_use: data.availableQuantity,
+                }
+            })
 
-        await this.prisma.$disconnect()
+            await this.prisma.$disconnect()
+        } catch (e) {
+            await this.prisma.$disconnect()
+            throw Error('Erro ao criar o cupom')
+        }
     }
 
-    public async listCoupons() {
-        const coupons = this.prisma.coupons.findMany()
+    public async listCoupons(): Promise<CouponResponse[]> {
+        const coupons = await this.prisma.coupons.findMany()
         await this.prisma.$disconnect()
         return coupons
     }

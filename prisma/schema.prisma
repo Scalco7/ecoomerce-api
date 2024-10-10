@@ -46,6 +46,6 @@ model coupons {
   name                String   @unique @db.VarChar(16)
   discoun_percentage  Decimal  @db.Decimal
   quantity_used       Int      @db.SmallInt
-  max_quantity_to_use Int      @db.SmallInt
+  max_quantity_to_use Int?     @db.SmallInt
   created_date        DateTime @default(now()) @db.Timestamp(6)
 }
