@@ -108,6 +108,7 @@ export class ProductsService {
             return section
         })
 
+        await this.prisma.$disconnect()
         return sections
     }
 }
