@@ -8,44 +8,81 @@ datasource db {
 }
 
 model product {
-  id                 String          @id @db.VarChar(17)
-  product_type_id    String          @db.VarChar(17)
-  price              Decimal         @db.Decimal
-  promotion_price    Decimal         @db.Decimal
-  available_quantity Int             @db.SmallInt
-  variant_1_name     String?         @db.VarChar(10)
-  variant_2_name     String?         @db.VarChar(10)
-  product_type       product_type    @relation(fields: [product_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_type_PK")
-  product_image      product_image[]
+  id                 String  @id @db.VarChar(17)
+  product_type_id    String  @db.VarChar(17)
+  price              Decimal @db.Decimal
+  promotion_price    Decimal @db.Decimal
+  available_quantity Int     @db.SmallInt
+  variant_1_name     String? @db.VarChar(10)
+  variant_2_name     String? @db.VarChar(10)
+
+  product_type  product_type    @relation(fields: [product_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_type_PK")
+  product_image product_image[]
+  order_product order_product[] @relation(map: "product_order_product_id_FK")
 }
 
 model product_image {
-  id         String  @id @db.VarChar(17)
-  product_id String  @db.VarChar(17)
+  id         String @id @db.VarChar(17)
+  product_id String @db.VarChar(17)
   url        String
-  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_id_PK")
+
+  product product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_id_FK")
 }
 
 model product_type {
-  id                  String    @id @db.VarChar(17)
-  name                String    @db.VarChar(100)
+  id                  String  @id @db.VarChar(17)
+  name                String  @db.VarChar(100)
   description         String
-  variant_type_1_name String?   @db.VarChar(10)
-  variant_type_2_name String?   @db.VarChar(10)
-  category_id         String    @db.VarChar(17)
-  product             product[]
+  variant_type_1_name String? @db.VarChar(10)
+  variant_type_2_name String? @db.VarChar(10)
+  category_id         String  @db.VarChar(17)
+
+  product  product[]
+  category category  @relation(fields: [category_id], references: [id], map: "category_id_FK")
 }
 
 model category {
   id   String @id @db.VarChar(17)
   name String @db.VarChar(50)
+
+  products product_type[]
 }
 
-model coupons {
+model coupon {
   id                  String   @id @db.VarChar(17)
   name                String   @unique @db.VarChar(50)
   discount_percentage Decimal  @db.Decimal
   quantity_used       Int      @db.SmallInt
   max_quantity_to_use Int?     @db.SmallInt
   created_date        DateTime @default(now()) @db.Timestamp(6)
+}
+
+model order {
+  id                     String   @id @db.VarChar(17)
+  created_date           DateTime @default(now()) @db.Timestamp(6)
+  updated_at             DateTime @default(now()) @db.Timestamp(6)
+  state                  String   @db.VarChar(30) // Awaiting payment | Processing payment | Separating | Transporting | Delivered | Canceled 
+  payer_name             String   @db.VarChar(100)
+  payer_email            String   @db.VarChar(100)
+  payer_document_number  String   @db.VarChar(20)
+  payer_cellphone_number String   @db.VarChar(20)
+  address_postal_code    String   @db.VarChar(20)
+  address_country        String   @db.VarChar(50)
+  address_state          String   @db.VarChar(50)
+  address_city           String   @db.VarChar(50)
+  address_neighborhood   String   @db.VarChar(50)
+  address_street         String   @db.VarChar(100)
+  address_number         String   @db.VarChar(10)
+  address_complement     String?  @db.VarChar(100)
+
+  order_product order_product[] @relation(map: "order_order_product_id_FK")
+}
+
+model order_product {
+  id         String @id @db.VarChar(17)
+  product_id String @db.VarChar(17)
+  order_id   String @db.VarChar(17)
+
+  product product @relation(fields: [product_id], references: [id], map: "product_order_product_id_FK")
+  order   order   @relation(fields: [order_id], references: [id], map: "order_order_product_id_FK")
 }
