@@ -8,8 +8,8 @@ datasource db {
 }
 
 model product {
-  id                 String          @id @db.VarChar(8)
-  product_type_id    String          @db.VarChar(8)
+  id                 String          @id @db.VarChar(17)
+  product_type_id    String          @db.VarChar(17)
   price              Decimal         @db.Decimal
   promotion_price    Decimal         @db.Decimal
   available_quantity Int             @db.SmallInt
@@ -20,29 +20,29 @@ model product {
 }
 
 model product_image {
-  id         String  @id @db.VarChar(8)
-  product_id String  @db.VarChar(8)
+  id         String  @id @db.VarChar(17)
+  product_id String  @db.VarChar(17)
   url        String
   product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "product_id_PK")
 }
 
 model product_type {
-  id                  String    @id @db.VarChar(8)
+  id                  String    @id @db.VarChar(17)
   name                String    @db.VarChar(100)
   description         String
   variant_type_1_name String?   @db.VarChar(10)
   variant_type_2_name String?   @db.VarChar(10)
-  category_id         String    @db.VarChar(8)
+  category_id         String    @db.VarChar(17)
   product             product[]
 }
 
 model category {
-  id   String @id @db.VarChar(8)
+  id   String @id @db.VarChar(17)
   name String @db.VarChar(50)
 }
 
 model coupons {
-  id                  String   @id @db.VarChar(9)
+  id                  String   @id @db.VarChar(17)
   name                String   @unique @db.VarChar(50)
   discount_percentage Decimal  @db.Decimal
   quantity_used       Int      @db.SmallInt
