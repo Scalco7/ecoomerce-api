@@ -18,7 +18,7 @@ export interface CreateCouponRequest {
 export interface CouponResponse {
     id: string
     name: string
-    discoun_percentage: Prisma.Decimal
+    discount_percentage: Prisma.Decimal
     quantity_used: number
     max_quantity_to_use: number | null
     created_date: Date

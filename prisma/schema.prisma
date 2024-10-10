@@ -42,9 +42,9 @@ model category {
 }
 
 model coupons {
-  id                  String   @id @db.VarChar(8)
-  name                String   @unique @db.VarChar(16)
-  discoun_percentage  Decimal  @db.Decimal
+  id                  String   @id @db.VarChar(9)
+  name                String   @unique @db.VarChar(50)
+  discount_percentage Decimal  @db.Decimal
   quantity_used       Int      @db.SmallInt
   max_quantity_to_use Int?     @db.SmallInt
   created_date        DateTime @default(now()) @db.Timestamp(6)

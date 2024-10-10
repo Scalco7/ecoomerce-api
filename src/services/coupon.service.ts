@@ -4,11 +4,11 @@ import { generateRandomID } from "../utils/id.utils";
 
 function formatCouponForResponse(coupon: {
     name: string
-    discoun_percentage: Prisma.Decimal
+    discount_percentage: Prisma.Decimal
 }): CouponDataForResponse {
     const data: CouponDataForResponse = {
         name: coupon.name,
-        discountPercentage: Number(coupon.discoun_percentage)
+        discountPercentage: Number(coupon.discount_percentage)
     }
 
     return data
@@ -24,7 +24,7 @@ export class CouponsService {
     public async getCouponByName({ name }: GetCouponByNameRequest): Promise<CouponDataForResponse> {
         const coupon = await this.prisma.coupons.findUnique({
             where: { name: name },
-            select: { name: true, discoun_percentage: true, quantity_used: true, max_quantity_to_use: true }
+            select: { name: true, discount_percentage: true, quantity_used: true, max_quantity_to_use: true }
         })
 
         if (!coupon) {
@@ -42,19 +42,30 @@ export class CouponsService {
 
     public async createCoupon(data: CreateCouponRequest): Promise<void> {
         try {
-            this.prisma.coupons.create({
+            const same = await this.prisma.coupons.findUnique({
+                where: { name: data.name },
+                select: { id: true }
+            })
+
+            console.log(same)
+
+            if (same) throw Error('Cupom com o mesmo nome já existe.')
+
+            await this.prisma.coupons.create({
                 data: {
                     id: generateRandomID(),
                     name: data.name,
-                    discoun_percentage: data.discountPercentage,
+                    discount_percentage: data.discountPercentage,
                     quantity_used: 0,
-                    max_quantity_to_use: data.availableQuantity,
+                    max_quantity_to_use: data.availableQuantity ?? null,
                 }
             })
 
             await this.prisma.$disconnect()
+            return
         } catch (e) {
             await this.prisma.$disconnect()
+            if (e instanceof Error) throw e
             throw Error('Erro ao criar o cupom')
         }
     }

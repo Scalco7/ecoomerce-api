@@ -16,9 +16,7 @@ export class CouponController {
     public async createCoupon(data: CreateCouponRequest): Promise<void> {
         const { error } = couponObject.validate(data)
 
-        console.log(error)
-
-        if (error) throw error
+        if (error) throw Error(error.message)
 
         return await this.service.createCoupon(data)
     }
