@@ -57,23 +57,39 @@ model coupon {
   created_date        DateTime @default(now()) @db.Timestamp(6)
 }
 
+enum OrderState {
+  AwaitingPayment
+  ProcessingPayment
+  Separating
+  Transporting
+  Delivered
+  Canceled
+}
+
+enum OrderPaymentType {
+  Credit
+  Debit
+  Pix
+}
+
 model order {
-  id                     String   @id @db.VarChar(17)
-  created_date           DateTime @default(now()) @db.Timestamp(6)
-  updated_at             DateTime @default(now()) @db.Timestamp(6)
-  state                  String   @db.VarChar(30) // Awaiting payment | Processing payment | Separating | Transporting | Delivered | Canceled 
-  payer_name             String   @db.VarChar(100)
-  payer_email            String   @db.VarChar(100)
-  payer_document_number  String   @db.VarChar(20)
-  payer_cellphone_number String   @db.VarChar(20)
-  address_postal_code    String   @db.VarChar(20)
-  address_country        String   @db.VarChar(50)
-  address_state          String   @db.VarChar(50)
-  address_city           String   @db.VarChar(50)
-  address_neighborhood   String   @db.VarChar(50)
-  address_street         String   @db.VarChar(100)
-  address_number         String   @db.VarChar(10)
-  address_complement     String?  @db.VarChar(100)
+  id                     String           @id @db.VarChar(17)
+  created_date           DateTime         @default(now()) @db.Timestamp(6)
+  updated_at             DateTime         @default(now()) @db.Timestamp(6)
+  payment_type           OrderPaymentType
+  state                  OrderState
+  payer_name             String           @db.VarChar(100)
+  payer_email            String           @db.VarChar(100)
+  payer_document_number  String           @db.VarChar(20)
+  payer_cellphone_number String           @db.VarChar(20)
+  address_postal_code    String           @db.VarChar(20)
+  address_country        String           @db.VarChar(50)
+  address_state          String           @db.VarChar(50)
+  address_city           String           @db.VarChar(50)
+  address_neighborhood   String           @db.VarChar(50)
+  address_street         String           @db.VarChar(100)
+  address_number         String           @db.VarChar(10)
+  address_complement     String?          @db.VarChar(100)
 
   order_product order_product[] @relation(map: "order_order_product_id_FK")
 }
