@@ -22,7 +22,7 @@ export class CouponsService {
     }
 
     public async getCouponByName({ name }: GetCouponByNameRequest): Promise<CouponDataForResponse> {
-        const coupon = await this.prisma.coupons.findUnique({
+        const coupon = await this.prisma.coupon.findUnique({
             where: { name: name },
             select: { name: true, discount_percentage: true, quantity_used: true, max_quantity_to_use: true }
         })
@@ -42,7 +42,7 @@ export class CouponsService {
 
     public async createCoupon(data: CreateCouponRequest): Promise<void> {
         try {
-            const same = await this.prisma.coupons.findUnique({
+            const same = await this.prisma.coupon.findUnique({
                 where: { name: data.name },
                 select: { id: true }
             })
@@ -51,7 +51,7 @@ export class CouponsService {
 
             if (same) throw Error('Cupom com o mesmo nome já existe.')
 
-            await this.prisma.coupons.create({
+            await this.prisma.coupon.create({
                 data: {
                     id: generateRandomID(),
                     name: data.name,
@@ -71,7 +71,7 @@ export class CouponsService {
     }
 
     public async listCoupons(): Promise<CouponResponse[]> {
-        const coupons = await this.prisma.coupons.findMany()
+        const coupons = await this.prisma.coupon.findMany()
         await this.prisma.$disconnect()
         return coupons
     }
