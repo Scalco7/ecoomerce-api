@@ -47,8 +47,6 @@ export class CouponsService {
                 select: { id: true }
             })
 
-            console.log(same)
-
             if (same) throw Error('Cupom com o mesmo nome já existe.')
 
             await this.prisma.coupon.create({
