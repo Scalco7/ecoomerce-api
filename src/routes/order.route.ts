@@ -12,3 +12,13 @@ orderRoute.get("/list", async (req: Request, res: Response) => {
         res.status(400).json({ error: (error as Error).message })
     }
 })
+
+orderRoute.post("/create", async (req: Request, res: Response) => {
+    try {
+        const data = req.body
+        await orderController.createOrder(data)
+        res.status(200).json()
+    } catch (error) {
+        res.status(400).json({ error: (error as Error).message })
+    }
+})

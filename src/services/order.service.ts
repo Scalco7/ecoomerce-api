@@ -19,12 +19,15 @@ export class OrderService {
         try {
             for (let product of data.products) {
                 try {
-                    const dbProduct = await this.prisma.product.findUniqueOrThrow(
+                    const dbProduct = await this.prisma.product.findUnique(
                         {
                             where: { id: product.productId },
                             select: { available_quantity: true, promotion_price: true }
                         }
                     )
+
+                    if (!dbProduct)
+                        throw Error(`Produto ${product.name} inexistente`)
 
                     if (dbProduct.available_quantity < product.quantity)
                         throw Error(`Produto ${product.name} tem somente ${dbProduct.available_quantity} unidades disponíveis`)
